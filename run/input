@@ -1,4 +1,4 @@
-data_dir          data
+data_dir          ../data
 
 # LAMMPS data file.
 lmp_data          cg-80blk-50chain.lammps

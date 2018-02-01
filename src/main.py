@@ -12,9 +12,11 @@
   The master node can also be utilized along side the worker nodes.
   (This can be changed by modifying the 'host' file.) Usage:
   
-    mpiexec -np <n> python main.py mpi
+    cd run
+    mpiexec -np <n> python ../src/main.py mpi
   or
-    mpiexec --hostfile ./hosts -np <n> python main.py mpi
+    cd run
+    mpiexec --hostfile ./hosts -np <n> python ../src/main.py mpi
     
   where <n> is the number of physical cores in your cluster. To use the
   '--hostfile' option, you need to modify the 'host' file to accommodate
@@ -25,7 +27,7 @@
   
   Run parallel computing only on the master node. Usage:
   
-    python main.py mp
+    python ../src/main.py mp
 
 """
 import os, sys
