@@ -1,0 +1,15 @@
+data_dir          data
+
+# LAMMPS data file.
+lmp_data          cg-80blk-50chain.lammps
+
+# LAMMPS trajectory file.
+lmp_trj           cg-80blk-50chain-1atm-300K-40ns.lammpstrj
+
+cutoff            12.5  # Cutoff distance in angstrom, used for (1) determining
+                        # local p2 order parameter, and (2) dividing MD box
+                        # into a 3D grid of bins.
+p2_thresold       0.4   # Thresold value for local p2 order parameter.
+min_chk_length    5     # Minimum length of crystalline segment.
+dt                5e-6  # nanosecond
+log_interval      250   # Output to screen every log_interval atoms/beads
