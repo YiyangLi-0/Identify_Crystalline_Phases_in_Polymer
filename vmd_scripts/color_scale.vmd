@@ -1,0 +1,37 @@
+# There are 1041 colors available in VMD, with color ids ranging from 0 to 1040.
+# The first 17 are (in order): blue, red, gray, orange, yellow, tan, silver, 
+# green, white, pink, cyan, purple, lime, mauve, ochre, iceblue, and black.
+# The next group of 1024 colors (from 17 to 1040) are colors used in the color map.
+
+# Changing the color scale definition:
+# Suppose that of the 1024 colors, the first 512 are yellow, the second 512 colors
+# are blue.
+
+proc dual_color_scale {} {
+  set color_start [colorinfo num]
+
+  # Switch off display update during color re-definition
+  display update off
+
+  for {set i 0} {$i < 1024} {incr i 1} {
+    if {$i == 0} {
+      # yellow2
+      set r 0.88;  set g 0.97;  set b 0.02
+    }
+
+    if {$i == 512} {
+      # blue2
+      set r 0.02;  set g 0.38;  set b 0.67
+    }
+
+    # Update the i-th color.
+    color change rgb [expr $i + $color_start] $r $g $b
+  }
+
+  # Switch on display update.
+  display update on
+}
+
+# Update the colors of atoms rendered with the 'user' coloring method.
+dual_color_scale 
+

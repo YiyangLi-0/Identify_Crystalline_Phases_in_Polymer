@@ -1,0 +1,15 @@
+# Set the 'user' field as the values of the 'vx' column in trajectory file
+# at every time step.
+
+set numframes [molinfo top get numframes] 
+set sel [atomselect top "all"]
+
+for {set i 0} {$i<$numframes} {incr i 1} { 
+  animate goto $i 
+  display update
+  $sel frame $i 
+  puts "Setting User data for frame [$sel frame] ..." 
+  $sel set user  [$sel get vx]
+} 
+
+$sel delete 
