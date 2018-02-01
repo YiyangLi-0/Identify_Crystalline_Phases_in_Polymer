@@ -73,6 +73,7 @@ python ../src/main.py mp
 ├── run <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── hosts <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── input <br />
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── screen_output.png <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── image.png <br />
 └── vmd_scripts <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── color_scale.vmd <br />
@@ -127,6 +128,10 @@ Configuration file listing the nodes that will be used for distributed computing
 
 Input file containing required parameters.
 
+#### run/screen_output.png
+
+A screenshot of output for the MPI mode.
+
 #### run/image.png
 
 An example randering of the polymer system with VMD. <br />
@@ -176,58 +181,7 @@ mpiexec --hostfile ./hosts -np 6 python ../src/main.py mpi
 
 ### Screen output
 
-> LAMMPS data file: data/cg-80blk-50chain.lammps <br />
-> LAMMPS trajectory file: data/cg-80blk-50chain-1atm-300K-40ns.lammpstrj <br />
-> 
-> Time: 0.5 ns <br />
-> atom_id&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p2&nbsp;&nbsp;is_crys&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proc&nbsp; <br />
->&nbsp;-------&nbsp;|&nbsp;-------&nbsp;&nbsp;-------&nbsp;&nbsp;------------&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;|&nbsp;-0.0079&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank0&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2000&nbsp;|&nbsp;-0.0321&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave1-rank3&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2750&nbsp;|&nbsp;-0.0792&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank4&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;750&nbsp;|&nbsp;-0.0521&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank1&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3500&nbsp;|&nbsp;-0.0912&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank5&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1500&nbsp;|&nbsp;&nbsp;0.0909&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave1-rank2&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;250&nbsp;|&nbsp;&nbsp;0.0148&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank0&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2250&nbsp;|&nbsp;-0.0451&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave1-rank3&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3000&nbsp;|&nbsp;&nbsp;0.0114&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank4&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;|&nbsp;&nbsp;0.0562&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank1&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3750&nbsp;|&nbsp;&nbsp;0.1311&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank5&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1750&nbsp;|&nbsp;-0.0259&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave1-rank2&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500&nbsp;|&nbsp;&nbsp;0.0109&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank0&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2500&nbsp;|&nbsp;&nbsp;0.0604&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave1-rank3&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3250&nbsp;|&nbsp;-0.0114&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank4&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1250&nbsp;|&nbsp;&nbsp;0.0521&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank1&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3999&nbsp;|&nbsp;&nbsp;0.1746&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank5&nbsp; <br />
-> Filtering crystalline atoms... <br />
-> Done <br />
-> Crystalline atoms:  0 / 4000 <br />
-> Crystallinty:  0.0 <br />
-> 
-> Time: 25.0 ns <br />
-> atom_id&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p2&nbsp;&nbsp;is_crys&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proc&nbsp; <br />
->&nbsp;-------&nbsp;|&nbsp;-------&nbsp;&nbsp;-------&nbsp;&nbsp;------------&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;|&nbsp;&nbsp;0.0851&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank0&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2000&nbsp;|&nbsp;&nbsp;0.5543&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave1-rank3&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2750&nbsp;|&nbsp;&nbsp;0.2190&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank4&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;750&nbsp;|&nbsp;&nbsp;0.1121&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank1&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1500&nbsp;|&nbsp;&nbsp;0.5630&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave1-rank2&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3500&nbsp;|&nbsp;&nbsp;0.8161&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave2-rank5&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2250&nbsp;|&nbsp;&nbsp;0.4310&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave1-rank3&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;250&nbsp;|&nbsp;&nbsp;0.8452&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Master-rank0&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3000&nbsp;|&nbsp;&nbsp;0.7537&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave2-rank4&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;|&nbsp;&nbsp;0.1774&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank1&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3750&nbsp;|&nbsp;&nbsp;0.6286&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave2-rank5&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1750&nbsp;|&nbsp;&nbsp;0.6259&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave1-rank2&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;2500&nbsp;|&nbsp;-0.0190&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave1-rank3&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500&nbsp;|&nbsp;&nbsp;0.5150&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Master-rank0&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3250&nbsp;|&nbsp;&nbsp;0.5011&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;&nbsp;Slave2-rank4&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;1250&nbsp;|&nbsp;-0.0591&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Master-rank1&nbsp; <br />
->&nbsp;&nbsp;&nbsp;&nbsp;3999&nbsp;|&nbsp;&nbsp;0.1601&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;Slave2-rank5&nbsp; <br />
-> Filtering crystalline atoms... <br />
-> Done <br />
-> Crystalline atoms:  1983 / 4000 <br />
-> Crystallinty: 0.496
+![Example rendering.](./run/screen_output.png)
 
 
 # Visualization
@@ -272,5 +226,6 @@ is opened. Now modify some settings as stated below:
 ```
    render Tachyon vmdscene.dat tachyon -aasamples 24 -fullshade -res 1000 1000 %s -format PNG -o image.png
 ```
+Here is the rendered image, for time step 0.5 ns (left) and 40.0 ns (right), where yellow beads belong to amorphous phase and blue beads belong to crystalline phase.
 ![Example rendering.](./run/image.png)
 
