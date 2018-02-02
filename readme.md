@@ -2,11 +2,10 @@
 
 A distributed computing algorithm is developed to identify the crystalline and amorphous phases in a coarse-grained polymer system (coarse-grained linear polyethylene).
 Distributed computing is separately implemented in both MPI (message passing interface) mode and multiprocessing mode. 
-The bin-table technique is used in both modes to further improve computing efficiency.
+The bin-table technique is used in both modes to further improve computing efficiency. 
+The [local p2 order parameter][ref-1] is computed for every particle in system, which is used to determine if a particle should be assigned to the crystalline phase.
 
 This code was used in my project 6 and project 7, as demonstrated in [my webpage](https://liyiyang.weebly.com/).
-
-The local p2 order parameter is computed for every particle in system, which is used to determine if a particle should be assigned to the crystalline phase.
 
 
 # Prerequisites
@@ -14,10 +13,11 @@ The local p2 order parameter is computed for every particle in system, which is 
 #### MPI mode:
 
 &nbsp;&nbsp;&nbsp;&nbsp;1. Open MPI or MPICH <br />
-&nbsp;&nbsp;&nbsp;&nbsp;2. mpi4py
+&nbsp;&nbsp;&nbsp;&nbsp;2. mpi4py <br />
+These should be installed on the master node as well as all the worker nodes in your cluster.
 
-These should be installed on the master node as well as all the worker nodes in your cluster. <br />
-Master node should be able to passwordlessly ssh to worker nodes. <br />
+In addition, master node and worker nodes should have access to the folder of this project through network file system (NFS), and any node should be able to passwordlessly ssh to any other node. 
+Please read [this tutorial](https://www-users.cs.york.ac.uk/~mjf/pi_cluster/src/Building_a_simple_Beowulf_cluster.html#_install_and_setup_the_network_file_system) for more information.
 
 #### Multiprocessing mode: <br />
 
@@ -76,8 +76,8 @@ python ../src/main.py mp
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── screen_output.png <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── image.png <br />
 └── vmd_scripts <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── color_scale.vmd <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── setuserfield.vmd
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── color_scale.vmd <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── setuserfield.vmd
 
 
 #### src/main.py
@@ -135,8 +135,6 @@ A screenshot of output for the MPI mode.
 #### run/image.png
 
 An example randering of the polymer system with VMD. <br />
-Left:  at 0.5 ns. <br />
-Right: at 40.0 ns.
 
 #### vmd_scripts/color_scale.vmd
 
@@ -181,7 +179,7 @@ mpiexec --hostfile ./hosts -np 6 python ../src/main.py mpi
 
 ### Screen output
 
-![Example rendering.](./run/screen_output.png)
+![Screen output.](./run/screen_output.png)
 
 
 # Visualization
@@ -229,3 +227,5 @@ is opened. Now modify some settings as stated below:
 Here is the rendered image, for time step 0.5 ns (left) and 40.0 ns (right), where yellow beads belong to amorphous phase and blue beads belong to crystalline phase.
 ![Example rendering.](./run/image.png)
 
+
+[ref-1]: http://aip.scitation.org/doi/abs/10.1063/1.3608056?journalCode=jcp
