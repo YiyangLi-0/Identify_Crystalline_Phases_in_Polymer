@@ -5,21 +5,22 @@ Distributed computing is separately implemented in both MPI (message passing int
 The bin-table technique is used in both modes to further improve computing efficiency. 
 The [local p2 order parameter][ref-1] is computed for every particle in system, which is used to determine if a particle should be assigned to the crystalline phase.
 
-This code was used in my project 6 and project 7, as demonstrated in [my webpage](https://liyiyang.weebly.com/).
+This postprocessing code was used in my research projects #6 and #7, as shown in [my webpage](https://liyiyang.weebly.com/).
 
 
 # Prerequisites
 
-#### MPI mode:
+### MPI mode
 
 &nbsp;&nbsp;&nbsp;&nbsp;1. Open MPI or MPICH <br />
 &nbsp;&nbsp;&nbsp;&nbsp;2. mpi4py <br />
-These should be installed on the master node as well as all the worker nodes in your cluster.
 
-In addition, master node and worker nodes should have access to the folder of this project through network file system (NFS), and any node should be able to passwordlessly ssh to any other node. 
-Please read [this tutorial](https://www-users.cs.york.ac.uk/~mjf/pi_cluster/src/Building_a_simple_Beowulf_cluster.html#_install_and_setup_the_network_file_system) for more information.
+These packages should be installed on the master node as well as all the worker nodes in your cluster.
 
-#### Multiprocessing mode: <br />
+In addition, master node and worker nodes should have access to the folder of this project through network file system (NFS), and any node should be able to passwordlessly ssh to any other node in your network. 
+Please read this [tutorial](https://www-users.cs.york.ac.uk/~mjf/pi_cluster/src/Building_a_simple_Beowulf_cluster.html#_install_and_setup_the_network_file_system) for more information.
+
+### Multiprocessing mode
 
 &nbsp;&nbsp;&nbsp;&nbsp;None
 
@@ -28,8 +29,8 @@ Please read [this tutorial](https://www-users.cs.york.ac.uk/~mjf/pi_cluster/src/
 
 ### MPI mode
 
-Run distributed computing on all the worker nodes in your cluster network.
-The master node can also be utilized along side the worker nodes (this can be changed by modifying the ![hosts file](./run/hosts).)
+Run distributed computing on all the worker nodes in your network.
+The master node can also be utilized along side the worker nodes (this can be changed by modifying the ![hosts](./run/hosts) file.)
  
 Usage:
 ```
@@ -42,11 +43,11 @@ cd run
 mpiexec --hostfile ./hosts -np <n> python ../src/main.py mpi
 ```
 where `<n>` is the number of physical cores in your cluster.
-To use the `--hostfile` option, you need to modify the ![hosts file](./run/hosts) to accommodate the setting of your cluster.
+To use the `--hostfile` option, you need to modify the ![hosts](./run/hosts) file to accommodate the setting of your cluster.
 
 ### Multiprocessing mode
 
-Run parallel computing only on the master node. Usage:
+Run parallel computing only on your local node (ie, your workstation). Usage:
 ```
 cd run
 python ../src/main.py mp
@@ -144,7 +145,7 @@ A VMD script to define a custom color scale used for rendering crystalline parti
 
 A VMD script to set the values of 'user' field as the values in the 'vx' column of LAMMPS trajectory file, at every time step listed in the trajectory file.
 
-### New folder created
+### File output
 
 After executing the code, an 'output' folder will be created under the 'run' folder, which contains three files:
 
@@ -169,15 +170,15 @@ IDs are sorted according to particle connectivity.
 Lists the crystallinty of polymer system at every time listed in the trajectory file.
 
 
-# Example output (MPI mode)
+# Example screen output (MPI mode)
 
-With a cluster with a master node and two slave nodes, as listed in the ![hosts file](./run/hosts) where each node has two physical cores, my computation is launched by
+With a cluster with a master node and two slave nodes, as listed in the ![hosts](./run/hosts) file where each node has two physical cores, my computation is launched by
 ```
 cd run
 mpiexec --hostfile ./hosts -np 6 python ../src/main.py mpi
 ```
 
-### Screen output
+which gives following screen output
 
 ![Screen output.](./run/screen_output.png)
 

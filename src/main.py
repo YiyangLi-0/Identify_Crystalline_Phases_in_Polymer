@@ -25,7 +25,7 @@
   -----------------------------------------------
   Multiprocessing mode:
   
-  Run parallel computing only on the master node. Usage:
+  Run parallel computing only on the local node. Usage:
   
     python ../src/main.py mp
 
@@ -95,7 +95,7 @@ def mpi_routine(input):
 def mp_routine(input):
     """ Using multiprocessing.
         Unless otherwise stated, codes are executed only on one core of the
-        master node.
+        local node.
     """
     from modules import identify_mp  # Custom module
 

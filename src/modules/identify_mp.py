@@ -34,7 +34,7 @@ def possible_crys_atoms(mds, bins, inp):
         # Create and submit jobs.
         parent, child = multiprocessing.Pipe(False)
         p = multiprocessing.Process(
-                name   = 'Master-rank_{}'.format(i),
+                name   = 'local-rank_{}'.format(i),
                 target =  parallel_job,
                 args   = (mds, bins, inp, loc_atoms, pca, child))
         p.start()
@@ -45,7 +45,7 @@ def possible_crys_atoms(mds, bins, inp):
     for p in jobs:
         p.join()
 
-    ''' Collect pca from worker processes to master process. '''
+    ''' Collect pca from child processes to master process. '''
     master_pca = []
     for parent in pipes:
         master_pca += parent.recv()     # Receive from the child end of pipe.
