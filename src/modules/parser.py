@@ -50,7 +50,8 @@ def parser(input_file):
     inp['lmp_data'] = inp['data_dir'] + '/' + inp['lmp_data']
     inp['lmp_trj'] = inp['data_dir'] + '/' + inp['lmp_trj']
     inp['cutoff_sqr'] = inp['cutoff']**2  # angstrom^2
-    inp['new_trj_file'] = inp['output_dir'] + 'identified.lammpstrj'
+    inp['new_trj_file_w'] = inp['output_dir'] + 'identified_wrapped.lammpstrj'
+    inp['new_trj_file_uw'] = inp['output_dir'] + 'identified_unwrapped.lammpstrj'
     inp['crys_atoms_file'] = inp['output_dir'] + 'identified_crystalline_atoms'
     inp['crystallinty_file'] = inp['output_dir'] + 'crystallinty'
     return inp

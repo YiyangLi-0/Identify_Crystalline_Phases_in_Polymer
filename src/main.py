@@ -86,6 +86,7 @@ def mpi_routine(input):
             print_header(mds.time)
 
         # Identify possible crystalline atoms (pca).
+        comm.Barrier()
         pca = identify_mpi.possible_crys_atoms(comm, mds, bins, inp)
 
         # Postprocess on the master process.
@@ -131,7 +132,8 @@ def check_output_dir(inp):
     if not os.path.exists(inp['output_dir']):
         os.mkdir(inp['output_dir'])
         
-    for target in [inp['new_trj_file'], 
+    for target in [inp['new_trj_file_w'], 
+                   inp['new_trj_file_uw'],
                    inp['crys_atoms_file'],
                    inp['crystallinty_file']]:
         if os.path.exists(target):

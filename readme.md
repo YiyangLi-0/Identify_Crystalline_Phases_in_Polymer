@@ -4,6 +4,7 @@ A distributed computing algorithm is developed to identify the crystalline and a
 Distributed computing is separately implemented in both MPI (message passing interface) mode and multiprocessing mode. 
 The bin-table technique is used in both modes to further improve computing efficiency. 
 The [local p2 order parameter][ref-1] is computed for every particle in system, which is used to determine if a particle should be assigned to the crystalline phase.
+The identified system is output in both wrapped and unwrapped coordinates.
 
 This postprocessing code was used in my research projects #6 and #7, as shown in [my webpage](https://liyiyang.weebly.com/).
 
@@ -147,18 +148,23 @@ A VMD script to set the values of 'user' field as the values in the 'vx' column 
 
 ### File output
 
-After executing the code, an 'output' folder will be created under the 'run' folder, which contains three files:
+After executing the code, an 'output' folder will be created under the 'run' folder, which contains four files:
 
 . <br />
 └── run <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── output <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── identified.lammpstrj <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── identified_wrapped.lammpstrj <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── identified_unwrapped.lammpstrj <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── identified_crystalline_atoms <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── crystallinty
 
-#### run/output/identified.lammpstrj
+#### run/output/identified_wrapped.lammpstrj
 
-A new LAMMPS trajectory file, using a 'vx' column to indicate if a particle belongs to crystalline phase.
+A LAMMPS trajectory file in which molecules/chains are wrapped into simulation box according to periodic boundary conditions; a 'vx' column is used to indicate if a particle belongs to crystalline phase.
+
+#### run/output/identified_unwrapped.lammpstrj
+
+A LAMMPS trajectory file in which molecules/chains are not wrapped into simulation box; a 'vx' column is used to indicate if a particle belongs to crystalline phase.
 
 #### run/output/identified_crystalline_atoms
 
@@ -188,13 +194,13 @@ which gives following screen output
 I use VMD to visualize the identified polymer system.
 For this, I installed:
 
-&nbsp;&nbsp;&nbsp;&nbsp;1. Tachyon <br />
+&nbsp;&nbsp;&nbsp;&nbsp;1. tachyon <br />
 &nbsp;&nbsp;&nbsp;&nbsp;2. VMD
 
 Then open the VMD GUI interface with
 ```
 cd run
-vmd output/identified.lammpstrj 
+vmd output/identified_wrapped.lammpstrj 
 ```
 is opened. Now modify some settings as stated below: 
 
@@ -211,7 +217,7 @@ is opened. Now modify some settings as stated below:
 
 'Graphics' -> 'Representations...', this opens a new panel: <br />
 &nbsp;&nbsp;&nbsp;&nbsp;Modify 'Coloring Method' to 'Trajectory' -> 'User' -> 'User' <br />
-&nbsp;&nbsp;&nbsp;&nbsp;Modify 'Drawing Method' -> 'VDW' (Sphere Scale 0.6) <br />
+&nbsp;&nbsp;&nbsp;&nbsp;Modify 'Drawing Method' -> 'VDW' (Sphere Scale 0.7) <br />
 &nbsp;&nbsp;&nbsp;&nbsp;Modify 'Material' -> 'AOShiny' <br />
 &nbsp;&nbsp;&nbsp;&nbsp;Click  'Create Rep' <br />
 &nbsp;&nbsp;&nbsp;&nbsp;Modify 'Drawing Method' -> 'DynamicBonds' (Distance Cutoff 2.7)
@@ -225,7 +231,8 @@ is opened. Now modify some settings as stated below:
 ```
    render Tachyon vmdscene.dat tachyon -aasamples 24 -fullshade -res 1000 1000 %s -format PNG -o image.png
 ```
-Here is the rendered image, for time step 0.5 ns (left) and 40.0 ns (right), where yellow beads belong to amorphous phase and blue beads belong to crystalline phase.
+Here are some example images rendered for the wrapped and unwrapped systems.
+Images on the left are for time step 0.5 ns, and images on the right are for time step 40.0 ns, where yellow beads belong to amorphous phase and blue beads belong to crystalline phase.
 ![Example rendering.](./run/image.png)
 
 

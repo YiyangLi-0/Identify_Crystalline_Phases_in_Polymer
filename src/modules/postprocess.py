@@ -23,13 +23,15 @@ def postprocess(mds, inp, pca):
                 wid.write('{} '.format(i))
             wid.write('\n')
 
-    ''' Modify mds.is_crys_atom and write a modified lammps trajectory file.
+    ''' Generate mds.is_crys_atom and write two new lammps trajectory files.
     '''
+    mds.is_crys_atom = [0] * mds.n_atom
     for i in range(mds.n_atom):
         if any(i in chunk for chunk in chunks):
             mds.is_crys_atom[i] = 1
 
-    md_system.write_trj(mds, inp['new_trj_file'])
+    md_system.write_trj(mds, inp['new_trj_file_w'])   # Wrapped.
+    md_system.write_trj(mds, inp['new_trj_file_uw'])  # UnWrapped.
     sys.stdout.flush()
     print 'Done'
 

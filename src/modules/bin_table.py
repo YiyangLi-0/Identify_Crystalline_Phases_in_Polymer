@@ -14,18 +14,18 @@ class bintable:
     def find_bin(self, mds, i):
         """ Find the bin-id that atom i belongs to.
         """
-        r  = mds.atom_coords[i]
+        r  = mds.atom_coords[i]  # Wrapped coordinates.
         
         # Index of bin in x direction.
-        bx = r[0] // (mds.box_length[0] / float(self.xbins))
+        bx = (r[0] - min(mds.box[0])) // (mds.box_length[0]/float(self.xbins))
         bx = min(int(bx), self.xbins-1)
 
         # Index of bin in y direction.
-        by = r[1] // (mds.box_length[1] / float(self.ybins))
+        by = (r[1] - min(mds.box[1])) // (mds.box_length[1]/float(self.ybins))
         by = min(int(by), self.ybins-1)
 
         # Index of bin in z direction.
-        bz = r[2] // (mds.box_length[2] / float(self.zbins))
+        bz = (r[2] - min(mds.box[2])) // (mds.box_length[2]/float(self.zbins))
         bz = min(int(bz), self.zbins-1)
         return bx + by * self.xbins + bz * self.xbins * self.ybins
 
@@ -56,8 +56,8 @@ def atom_neighbors(m, mds, bt):
     ''' Get the indices (bx, by, bz) of the bin that contains atom m. '''
     bin_id = bt.find_bin(mds, m)
     bx =  bin_id % bt.xbins
-    by = (bin_id / bt.xbins) % bt.ybins
-    bz =  bin_id / bt.xbins / bt.ybins
+    by = (bin_id // bt.xbins) % bt.ybins
+    bz =  bin_id // bt.xbins // bt.ybins
 
     ''' Get the indices (nx, ny, nz) of nearest bins surrounding the bin
         (bx, by, bz), then take the atom-ids in these bins. '''

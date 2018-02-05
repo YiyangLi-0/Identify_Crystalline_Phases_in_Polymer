@@ -13,6 +13,11 @@ class md_system:
     def __init__(self):
         self.n_atom       = 0   # Number of atoms in MD system.
         self.atom_coords  = []  # Wrapped coordinate of atoms.
+        self.ix           = []  # Image flags of atoms in x direction.
+        self.iy           = []  # Image flags of atoms in y direction.
+        self.iz           = []  # Image flags of atoms in z direction, counting
+                                # how many times the unwrapped coordinate of an
+                                # atom passes through box boundary.
         self.atom_types   = []  # Atom types of atoms.
         self.is_crys_atom = []  # If atoms are identified as belonging
                                 # to crystalline phase, 0-false, 1-true.
@@ -35,21 +40,22 @@ class md_system:
         """
         return [i for i in range(self.n_atom) if self.is_crys_atom[i]]
 
-    def chain_ends(self, c):
-        """ Rerurn the end-atoms of a linear chain with chain-id c.
+    def chain_ends(self, cid):
+        """ Rerurn the end-atoms of a linear chain with chain-id cid.
         """
-        atoms = [i for i, x in enumerate(self.chain) if x == c]
+        # Atoms belonging to a chain cid, not sorted due to atom connectivity.
+        atoms = [i for i, x in enumerate(self.chain) if x == cid]
         ends  = []
         for atom in atoms:
             if len(self.bonds[atom]) == 1:
                 ends.append(atom)
         return ends
 
-    def atoms_in_chain(self, c):
-        """ Rerurn all the atoms belonging to a chain with chain-id c.
-            Atoms are sorted according to their connectivity.
+    def atoms_in_chain(self, cid):
+        """ Rerurn all the atoms belonging to a chain with chain-id cid.
+            Atoms are sorted according to atom connectivity.
         """
-        ends  = self.chain_ends(c)
+        ends  = self.chain_ends(cid)
         atoms = [ends[0]]               # Start from a random end atom
         queue = self.bonds[ends[0]][:]  # Avoid modifying self.bonds
         while queue:
@@ -62,11 +68,12 @@ class md_system:
         return atoms
 
     def find_all_segments(self, atoms):
-        """ Identify all atom-segments (due to atom connectivity) from the
-            input list of atoms. No duplicate atom-ids should appear in atoms,
-            and note that atoms will be modified.
+        """ Identify all atom-segments (due to atom connectivity) from the input
+            list of atoms. This routine is independent from the self.chain data
+            read from LAMMPS data file. Note that atoms will be modified.
         """
         segments = []
+        atoms = list(set(atoms))  # Make sure atoms has no duplicate items.
         while atoms:
             segment = self.find_one_segment(atoms)
             segments.append(segment)
@@ -81,17 +88,91 @@ class md_system:
         segment = [ini]
         queue   = self.bonds[ini][:]
         while queue:
-            next = queue[-1]
-            queue.pop(-1)
-            if (next not in atoms) or (next in segment):
+            # Depopulate queue.
+            next = queue.pop(-1)
+            if any([next not in atoms, next in segment]):
                 continue
+
+            # Grow segment.
             segment.append(next)
-            for neighbor in self.bonds[next]:
-                if neighbor in atoms:
-                    if neighbor not in segment:
-                        queue.append(neighbor)
+
+            # Grow queue.
+            for neig in self.bonds[next]:
+                if all([neig in atoms, neig not in segment]):
+                    queue.append(neig)
         return segment
 
+    def unwrapped_coord(self, i):
+        """ Return the unwrapped coordinate of atom i.
+        """
+        shift = np.array([float(self.ix[i]) * self.box_length[0],
+                          float(self.iy[i]) * self.box_length[1],
+                          float(self.iz[i]) * self.box_length[2]])
+        return self.atom_coords[i] + shift
+
+    def update_image_flag(self, i, xu):
+        """ Update the image flags of atom i with it's unwrapped coordinate xu.
+        """
+        self.ix[i] = int( (xu[0] - min(self.box[0])) // self.box_length[0] )
+        self.iy[i] = int( (xu[1] - min(self.box[1])) // self.box_length[1] )
+        self.iz[i] = int( (xu[2] - min(self.box[2])) // self.box_length[2] )
+
+    def update_all_image_flags(self, heads = []):
+        """ Determine image flags for every atom, where heads contains atom-ids
+            that are used as the 1-st reference atom (inside simulation box) of
+            each molecule/chain in the unwraping procedure.
+        """
+        ''' Initialize image flags. '''
+        self.ix = [None] * self.n_atom
+        self.iy = [None] * self.n_atom
+        self.iz = [None] * self.n_atom
+
+        ''' Loop over chains in MD system. '''
+        for cid in self.chain_ids:
+            chain_atoms = self.atoms_in_chain(cid)
+
+            # Determine 1-st reference atom ini (inside simulation box).
+            intersects = list(set(heads) & set(chain_atoms))
+            if intersects:
+                ini = intersects[0]
+            else:
+                ini = chain_atoms[0]
+
+            self.ix[ini] = 0
+            self.iy[ini] = 0
+            self.iz[ini] = 0
+
+            # List of atom-ids whose image flags have been established.
+            flagged = [ini]  # Rebuilt for each chain.
+
+            queue = self.bonds[ini][:]
+            while queue:
+                # Depopulate queue.
+                next = queue.pop(-1)
+                if next in flagged:
+                    continue
+
+                # Find the unwrapped coordinate of a 'reference' atom, which is
+                # a bonded neighbor of atom next, in flagged.
+                for i in flagged:
+                    if i in self.bonds[next]:
+                        x_ref = self.unwrapped_coord(i)
+                        break
+
+                # Unwrapped coordinate of atom next, taking x_ref as reference.
+                x_next = nearest_atom_image(
+                             self.atom_coords[next], x_ref, self.box_length)
+
+                # Establish the image flags of atom next.
+                self.update_image_flag(next, x_next)
+
+                # Grow flagged.
+                flagged.append(next)
+
+                # Grow queue.
+                for neig in self.bonds[next]:
+                    if all([neig in chain_atoms, neig not in flagged]):
+                        queue.append(neig)
 
 def read_md_system(lmp_data):
     """ Read MD system information from LAMMPS data file.
@@ -107,9 +188,6 @@ def read_md_system(lmp_data):
                 mds.n_atom = int(line.split()[0])
             if 'bonds' in line:
                 mds.n_bond = int(line.split()[0])
-
-        ''' Initialize mds.is_crys_atom for later use. '''
-        mds.is_crys_atom = [0] * mds.n_atom
 
         ''' Read box bounds. '''
         for i in range(3):
@@ -168,6 +246,9 @@ def read_md_system(lmp_data):
         # Check consistency.
         assert  mds.n_chain == len(mds.find_all_segments(range(mds.n_atom))), \
                 "Atom connectivity is inconsistent in {}".format(lmp_data)
+
+        ''' Determine atom image flags. '''
+        mds.update_all_image_flags()
     return mds
 
 def wrap_atom_into_box(x, box, box_length):
@@ -253,14 +334,11 @@ def update_md_system(mds_ref, lmp_trj, t_pos, d_pos, dt):
             mds.box[i] = [float(j) for j in line[0:2]]
             mds.box_length[i] = abs(mds.box[i][1] - mds.box[i][0])
 
-        ''' RE-initialize mds.is_crys_atom. '''
-        mds.is_crys_atom = [0] * mds.n_atom
-
         ''' Update atom coordinates. '''
         fid.seek(d_pos)
         while True:        
             line = fid.readline()
-            if not line or line.startswith('ITEM: TIMESTEP'):
+            if any([not line, line.startswith('ITEM: TIMESTEP')]):
                 break
             atom_id = int(line.split()[0]) - 1  # Convert to 0-indexed
             xs = [float(p) for p in line.split()[xid : zid+1]]
@@ -273,6 +351,9 @@ def update_md_system(mds_ref, lmp_trj, t_pos, d_pos, dt):
                 xs = [x,y,z]
             wrap_atom_into_box(xs, mds.box, mds.box_length)
             mds.atom_coords[atom_id] = xs
+
+        ''' Determine atom image flags. '''
+        mds.update_all_image_flags()
     return mds
 
 def write_trj(mds, trj_target):
@@ -296,11 +377,17 @@ def write_trj(mds, trj_target):
             in VMD, I use the user field 'vx' to store dynamically changing
             atom_types. '''
         wid.write('ITEM: ATOMS id mol type x y z vx\n')
+        unwrapped = 'unwrapped' in trj_target
         for i in range(mds.n_atom):
             atom_id    = i + 1            # convert to 1-indexed.
             molecule   = mds.chain[i] + 1 # convert to 1-indexed.
             atom_type  = mds.atom_types[i]
-            x,y,z      = mds.atom_coords[i]
+            if unwrapped:
+                # Unwrapped coordinates.
+                x,y,z  = mds.unwrapped_coord(i)
+            else:
+                # Wrapped coordinates.
+                x,y,z  = mds.atom_coords[i]
             is_crystal = mds.is_crys_atom[i]
             row = (atom_id, molecule, atom_type, x, y, z, is_crystal)
             wid.write(' %6d %4d %2d %.6f %.6f %.6f %d \n' %row)
