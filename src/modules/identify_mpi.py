@@ -11,7 +11,7 @@ def possible_crys_atoms(comm, mds, bins, inp):
     """ Manage worker processes to identify possible crystalline atoms.
     """
     # Approximate number of local atoms to be handled by a worker process.
-    loc_n = mds.n_atom / comm.size
+    loc_n = mds.n_atom // comm.size
 
     ''' Generate a list of atom ids to be handled by current worker process. '''
     atoms = range(mds.n_atom)

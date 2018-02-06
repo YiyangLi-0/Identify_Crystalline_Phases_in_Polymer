@@ -13,7 +13,7 @@ def possible_crys_atoms(mds, bins, inp):
     n_proc = multiprocessing.cpu_count()
     
     # Approximate number of local atoms to be handled by a child process.
-    loc_n = mds.n_atom / n_proc
+    loc_n = mds.n_atom // n_proc
 
     ''' Create and submit jobs. '''
     jobs  = [None] * n_proc
