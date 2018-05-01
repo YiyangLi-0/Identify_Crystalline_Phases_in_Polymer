@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import numpy as np
 # Custom modules.
@@ -51,12 +51,12 @@ def p2_parameters(mds, bins, inp, loc_atoms, pca, proc):
             # Formated screen output.
             if i % inp['log_interval'] == 0 or i == mds.n_atom - 1:
                 is_crys = 'true' if p2i > inp['p2_thresold'] else 'false'
-                print '{:>7d} | {:>7.4f}  {:>7}  {:>12}'.format(
-                       i, p2i, is_crys, proc)
+                print ('{:>7d} | {:>7.4f}  {:>7}  {:>12}'.format(
+                        i, p2i, is_crys, proc))
                 sys.stdout.flush()
         else:
-            print '  !!! Atom {} has no bond within cutoff {} A'.format(
-                     i, inp['cutoff'])
+            print ('  !!! Atom {} has no bond within cutoff {} A'.format(
+                      i, inp['cutoff']))
             sys.stdout.flush()
 
 

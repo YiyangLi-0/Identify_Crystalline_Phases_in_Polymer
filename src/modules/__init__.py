@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
   This blank file makes Python treat the 'module' directory as containing
   packages. So custom modules can be imported as module.<module-name>

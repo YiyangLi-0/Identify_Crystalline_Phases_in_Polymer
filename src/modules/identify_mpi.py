@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import numpy as np
 from mpi4py import MPI
 # Custom modules.
@@ -10,19 +10,13 @@ from . import p2_parameters
 def possible_crys_atoms(comm, mds, bins, inp):
     """ Manage worker processes to identify possible crystalline atoms.
     """
-    # Approximate number of local atoms to be handled by a worker process.
-    loc_n = mds.n_atom // comm.size
-
-    ''' Generate a list of atom ids to be handled by current worker process. '''
-    atoms = range(mds.n_atom)
-    if comm.rank < comm.size - 1:
-        loc_atoms = atoms[comm.rank*loc_n : (comm.rank+1)*loc_n]
-    else:
-        loc_atoms = atoms[comm.rank*loc_n :]
+    ''' Assign local set of atoms to be handled by current process. '''
+    chunked_atoms = md_system.distribute_atoms(range(mds.n_atom), comm.size)
+    loc_atoms = chunked_atoms[comm.rank]
 
     ''' Initialize an numpy array to store the ids of possible crystalline
-        atoms (pca) for the current worker process. '''
-    L   = max(loc_n, mds.n_atom-(comm.size-1)*loc_n)  # Length of pca.
+        atoms (pca) for the current process. '''
+    L   = max([len(_) for _ in chunked_atoms])  # Length of pca.
     pca = np.empty(L, dtype = np.int)
     pca.fill(-1)
 
@@ -33,7 +27,7 @@ def possible_crys_atoms(comm, mds, bins, inp):
     else:
         master_pca = None
 
-    ''' Identify crystalline atoms and modify pca in current worker process. '''
+    ''' Identify crystalline atoms and modify pca in current process. '''
     proc = '{}-rank{}'.format(MPI.Get_processor_name(), comm.rank)
     p2_parameters.p2_parameters(mds, bins, inp, loc_atoms, pca, proc)
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ 
   Identify crystalline atoms and crystalline chunks in a trajectory of MD
   system. Here 'atom' means 'coarse-grained bead'. Distributed computing is
@@ -13,10 +13,10 @@
   (This can be changed by modifying the 'host' file.) Usage:
   
     cd run
-    mpiexec -np <n> python ../src/main.py mpi
+    mpiexec -np <n> python3 ../src/main.py mpi
   or
     cd run
-    mpiexec --hostfile ./hosts -np <n> python ../src/main.py mpi
+    mpiexec --hostfile ./hosts -np <n> python3 ../src/main.py mpi
     
   where <n> is the number of physical cores in your cluster. To use the
   '--hostfile' option, you need to modify the 'host' file to accommodate
@@ -27,7 +27,7 @@
   
   Run parallel computing only on the local node. Usage:
   
-    python ../src/main.py mp
+    python3 ../src/main.py mp
 
 """
 import os, sys
@@ -46,7 +46,7 @@ def main():
         mp_routine('input')
         
     else:
-        print '!! Wrong parameter provided, should be either \"mpi\" or \"mp\"'
+        print ('!! Wrong parameter provided, either \"mpi\" or \"mp\"')
         exit()
 
 def mpi_routine(input):
@@ -56,7 +56,6 @@ def mpi_routine(input):
     """
     from mpi4py import MPI
     from modules import identify_mpi  # Custom module
-
     # Initialize MPI communicator.
     comm = MPI.COMM_WORLD
 
@@ -68,12 +67,12 @@ def mpi_routine(input):
     ''' Generate reference MD system from LAMMPS data file. '''
     mds_ref = md_system.read_md_system(inp['lmp_data'])
     if comm.rank == 0:
-        print 'LAMMPS data file: {}'.format(inp['lmp_data'])
+        print ('LAMMPS data file: {}'.format(inp['lmp_data']))
 
     ''' Identify crystalline atoms at every time step in trajectory file. '''
     ts, ds = md_system.read_frame_positions(inp['lmp_trj'])
     if comm.rank == 0:
-        print 'LAMMPS trajectory file: {}\n'.format(inp['lmp_trj'])
+        print ('LAMMPS trajectory file: {}\n'.format(inp['lmp_trj']))
 
     ''' Loop over time steps. '''
     for k in range(len(ts)):
@@ -106,11 +105,11 @@ def mp_routine(input):
 
     ''' Generate reference MD system from LAMMPS data file. '''
     mds_ref = md_system.read_md_system(inp['lmp_data'])
-    print 'LAMMPS data file: {}'.format(inp['lmp_data'])
+    print ('LAMMPS data file: {}'.format(inp['lmp_data']))
 
     ''' Identify crystalline atoms at every time step in trajectory file. '''
     ts, ds = md_system.read_frame_positions(inp['lmp_trj'])
-    print 'LAMMPS trajectory file: {}\n'.format(inp['lmp_trj'])
+    print ('LAMMPS trajectory file: {}\n'.format(inp['lmp_trj']))
 
     ''' Loop over time steps. '''
     for k in range(len(ts)):
@@ -142,9 +141,9 @@ def check_output_dir(inp):
 def print_header(time):
     """ Print header of table.
     """
-    print 'Time: {} ns'.format(time)
-    print '{:>7} | {:>7}  {:>7}  {:>12}'.format('atom_id','p2','is_crys','proc')
-    print '{:->7} | {:->7}  {:->7}  {:->12}'.format('', '', '', '')
+    print ('Time: {} ns'.format(time))
+    print ('{:>7} | {:>7}  {:>7}  {:>12}'.format('atom_id','p2','is_crys','proc'))
+    print ('{:->7} | {:->7}  {:->7}  {:->12}'.format('', '', '', ''))
     sys.stdout.flush()
 
 

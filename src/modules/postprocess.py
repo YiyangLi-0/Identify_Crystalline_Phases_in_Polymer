@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 # Custom modules.
 from . import md_system
@@ -10,7 +10,7 @@ def postprocess(mds, inp, pca):
     """
     ''' Filter crystalline_atoms due to chunk length. '''
     sys.stdout.flush()
-    print 'Filtering crystalline atoms...'
+    print ('Filtering crystalline atoms...')
     chunks = mds.find_all_segments(pca)
     chunks = [chunk for chunk in chunks
               if len(chunk) >= inp['min_chk_length']]
@@ -33,14 +33,14 @@ def postprocess(mds, inp, pca):
     md_system.write_trj(mds, inp['new_trj_file_w'])   # Wrapped.
     md_system.write_trj(mds, inp['new_trj_file_uw'])  # UnWrapped.
     sys.stdout.flush()
-    print 'Done'
+    print ('Done')
 
     ''' Compute crystallinity of identified MD system. '''
     n_ca = sum([len(c) for c in chunks])
     crystallinity = float(n_ca) / mds.n_atom
     sys.stdout.flush()
-    print 'Crystalline atoms:  {} / {}'.format(n_ca, mds.n_atom)
-    print 'Crystallinty: {:>4.3}\n'.format(crystallinity)
+    print ('Crystalline atoms:  {} / {}'.format(n_ca, mds.n_atom))
+    print ('Crystallinty: {:>4.3}\n'.format(crystallinity))
 
     with open(inp['crystallinty_file'], 'a') as wid:
         wid.write('{:>6.2f} ns: {:>6.3f}\n'.format(

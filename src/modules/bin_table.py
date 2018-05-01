@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+from collections import Iterable
 
 
 class bintable:
@@ -78,8 +79,17 @@ def atom_neighbors(m, mds, bt):
                 atoms.append(bt.bins[bin_id])
 
     # Flatten 2D list.
-    atoms = [a for atoms_sublist in atoms for a in atoms_sublist]
+    atoms = flatten_2D_list(atoms)
     return atoms
+
+def flatten_2D_list(lst):
+    """ Flatten a nested 2D list.
+    """
+    for elst in lst:
+        if isinstance(elst, Iterable) and not isinstance(elst, (str, bytes)):
+            yield from flatten_2D_list(elst)
+        else:
+            yield elst
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import multiprocessing
 # Custom modules.
 from . import md_system
@@ -12,24 +12,20 @@ def possible_crys_atoms(mds, bins, inp):
     # Number of child processes.
     n_proc = multiprocessing.cpu_count()
     
-    # Approximate number of local atoms to be handled by a child process.
-    loc_n = mds.n_atom // n_proc
-
     ''' Create and submit jobs. '''
     jobs  = [None] * n_proc
     pipes = [None] * n_proc
-    atoms = range(mds.n_atom)
-    for i in range(n_proc):
-        # Generate list of atom ids to be handled by child process i.
-        if i < n_proc - 1:
-            loc_atoms = atoms[i*loc_n : (i+1)*loc_n]
-        else:
-            loc_atoms = atoms[i*loc_n :]
 
-        # Initialize a list to store the ids of possible crystalline atoms
-        # (pca) for every child process.
-        L   = max(loc_n, mds.n_atom-(n_proc-1)*loc_n)  # Length of pca.
-        pca = [-1] * L
+    # Partition atoms for parallel processing.
+    chunked_atoms = md_system.distribute_atoms(range(mds.n_atom), n_proc)
+
+    # Initialize a list to store the ids of possible crystalline atoms
+    # (pca) for every child process.
+    L   = max([len(_) for _ in chunked_atoms])  # Length of pca.
+    pca = [-1] * L
+
+    for i in range(n_proc):
+        loc_atoms = chunked_atoms[i]
 
         # Create and submit jobs.
         parent, child = multiprocessing.Pipe(False)

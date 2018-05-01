@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import numpy as np
 import copy
 
@@ -173,6 +173,12 @@ class md_system:
                 for neig in self.bonds[next]:
                     if all([neig in chain_atoms, neig not in flagged]):
                         queue.append(neig)
+
+def distribute_atoms(atoms, n):
+    """ split a 1D list atoms into n nearly-even-sized chunks.
+    """
+    k, m = divmod(len(atoms), n)
+    return [atoms[i*k+min(i,m) : (i+1)*k+min(i+1,m)] for i in range(n)]
 
 def read_md_system(lmp_data):
     """ Read MD system information from LAMMPS data file.
