@@ -14,7 +14,7 @@ This postprocessing code was used in my research projects #6 and #7, as shown in
 ### MPI mode
 
 &nbsp;&nbsp;&nbsp;&nbsp;1. Open MPI or MPICH <br />
-&nbsp;&nbsp;&nbsp;&nbsp;2. mpi4py <br />
+&nbsp;&nbsp;&nbsp;&nbsp;2. python3, numpy, mpi4py <br />
 
 These packages should be installed on the master node as well as all the worker nodes in your cluster.
 
@@ -23,7 +23,7 @@ Please read this [tutorial](https://www-users.cs.york.ac.uk/~mjf/pi_cluster/src/
 
 ### Multiprocessing mode
 
-&nbsp;&nbsp;&nbsp;&nbsp;None
+&nbsp;&nbsp;&nbsp;&nbsp;python3, numpy
 
 
 # Usage
@@ -32,26 +32,35 @@ Please read this [tutorial](https://www-users.cs.york.ac.uk/~mjf/pi_cluster/src/
 
 Run distributed computing on all the worker nodes in your network.
 The master node can also be utilized along side the worker nodes (this can be changed by modifying the ![hosts](./run/hosts) file.)
- 
+
+This program is tested with OpenMPI 3.0.1 and mpi4py 3.0.0 on Ubuntu 18.04.
+As there is a [default mpiexec (1.10)](https://launchpad.net/ubuntu/bionic/+package/mpi-default-bin) shipped with Ubuntu 18.04, we need to specify the correct path of mpiexec to correctly run the program (we can also set symlink or alias).
 Usage:
 ```
 cd run
-mpiexec -np <n> python ../src/main.py mpi
+path/to/mpiexec -np <n> python3 ../src/main.py mpi
 ```
 or
 ```
 cd run
-mpiexec --hostfile ./hosts -np <n> python ../src/main.py mpi
+path/to/mpiexec --hostfile ./hosts -np <n> python3 ../src/main.py mpi
 ```
 where `<n>` is the number of physical cores in your cluster.
 To use the `--hostfile` option, you need to modify the ![hosts](./run/hosts) file to accommodate the setting of your cluster.
+
+This program assumes that cores in every compute node have approximately equal computing power.
+If the computing power of cores are different in different nodes, then to get best performance we can specifically assign a process to a core, by using a ![ranks](./run/ranks) file:
+```
+cd run
+path/to/mpiexec --hostfile ./hosts --rankfile ./ranks -np <n> python3 ../src/main.py mpi
+```
 
 ### Multiprocessing mode
 
 Run parallel computing only on your local node (ie, your workstation). Usage:
 ```
 cd run
-python ../src/main.py mp
+python3 ../src/main.py mp
 ```
 
 
@@ -74,6 +83,7 @@ python ../src/main.py mp
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── cg-80blk-50chain-1atm-300K-40ns.lammpstrj <br />
 ├── run <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── hosts <br />
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── ranks <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── input <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── screen_output.png <br />
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── image.png <br />
@@ -124,7 +134,11 @@ A LAMMPS trajectory file containing two snap shots (or time steps) of the evolut
 
 #### run/hosts
 
-Configuration file listing the nodes that will be used for distributed computing.
+Configuration file listing all the nodes that will be used for distributed computing.
+
+#### run/ranks
+
+Configuration file that specifies which process/rank uses which core on which node.
 
 #### run/input
 
@@ -178,10 +192,12 @@ Lists the crystallinty of polymer system at every time listed in the trajectory 
 
 # Example screen output (MPI mode)
 
-With a cluster with a master node and two slave nodes, as listed in the ![hosts](./run/hosts) file where each node has two physical cores, my computation is launched by
+I use a cluster with a master node and three compute nodes (cpnd-[0-2]), as listed in the ![hosts](./run/hosts) file.
+The master node has 6 cores, while each compute node has 2 cores.
+To use all the 12 cores for distribured computing, my computation is conducted by launching 12 parallel processes:
 ```
 cd run
-mpiexec --hostfile ./hosts -np 6 python ../src/main.py mpi
+path/to/mpiexec --hostfile ./hosts -np 12 python3 ../src/main.py mpi
 ```
 
 which gives following screen output
