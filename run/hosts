@@ -1,6 +1,8 @@
-# This file lists the nodes that can be used to perform tasks.
-#   <IP>       <hostname>  <maximum number of process to run on this node>
-192.168.*.*    master      slots=2
-192.168.*.*    Slave1      slots=2
-192.168.*.*    Slave2      slots=2
-# Replace '*' with your actual IP address.
+# hosts file lists the nodes that can be used to perform tasks.
+#   <IP>      <hostname>  <maximum number of process to run on this node>
+192.168.*.*   master      slots=6
+192.168.*.*   cpnd-0      slots=2
+192.168.*.*   cpnd-1      slots=2
+192.168.*.*   cpnd-2      slots=2
+# Replace '*' with your actual IP address returned by
+#   ip address show
