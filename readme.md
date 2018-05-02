@@ -13,7 +13,7 @@ This postprocessing code was used in my research projects #6 and #7, as shown in
 
 ### MPI mode
 
-&nbsp;&nbsp;&nbsp;&nbsp;1. Open MPI or MPICH <br />
+&nbsp;&nbsp;&nbsp;&nbsp;1. Open MPI or MPICH or Intel MPI <br />
 &nbsp;&nbsp;&nbsp;&nbsp;2. python3, numpy, mpi4py <br />
 
 These packages should be installed on the master node as well as all the worker nodes in your cluster.
@@ -49,7 +49,7 @@ where `<n>` is the number of physical cores in your cluster.
 To use the `--hostfile` option, you need to modify the ![hosts](./run/hosts) file to accommodate the setting of your cluster.
 
 This program assumes that cores in every compute node have approximately equal computing power.
-If the computing power of cores are different in different nodes, then to get best performance we can specifically assign a process to a core, by using a ![ranks](./run/ranks) file:
+If the computing power of cores in different nodes are unequal, then to get best performance we can specify uneven workloads to different processes in our code, and use a ![ranks](./run/ranks) file to assign specific processes to specific cores:
 ```
 cd run
 path/to/mpiexec --hostfile ./hosts --rankfile ./ranks -np <n> python3 ../src/main.py mpi
