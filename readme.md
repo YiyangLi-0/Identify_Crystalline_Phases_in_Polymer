@@ -55,6 +55,11 @@ cd run
 path/to/mpiexec --hostfile ./hosts --rankfile ./ranks -np <n> python3 ../src/main.py mpi
 ```
 
+#### Note
+
+To make sure MPI uses both distributed-memory (inter-node communication) and shared-memory (intra-node communication) for efficient message passing, we can explicitly turn on the [vader BTL (Byte Transfer Layer)](https://www.open-mpi.org/faq/?category=sm) by adding the switch `--mca btl self,vader,tcp`.
+
+
 ### Multiprocessing mode
 
 Run parallel computing only on your local node (ie, your workstation). Usage:
@@ -197,7 +202,7 @@ The master node has 6 cores, while each compute node has 2 cores.
 To use all the 12 cores for distribured computing, my computation is conducted by launching 12 parallel processes:
 ```
 cd run
-path/to/mpiexec --hostfile ./hosts -np 12 python3 ../src/main.py mpi
+path/to/mpiexec --mca btl self,vader,tcp --hostfile ./hosts -np 12 python3 ../src/main.py mpi
 ```
 
 which gives following screen output
